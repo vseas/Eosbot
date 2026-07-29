@@ -1,0 +1,19 @@
+{
+  "connection": {
+    "eos_ip": "127.0.0.1",
+    "eos_port": 8000,
+    "listen_ip": "0.0.0.0",
+    "listen_port": 8001
+  },
+  "subscribe": {
+    "enabled": true,
+    "filters": [
+      "/eos/out/"
+    ]
+  },
+  "behavior": {
+    "dry_run": false,
+    "log_raw_osc": true,
+    "interactive_options": true
+  }
+}
