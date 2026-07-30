@@ -33,15 +33,15 @@ PolicyFn = Callable[[EosEvent], List[Option]]
 
 
 def policy_on_any_cue(event: EosEvent) -> List[Option]:
-    """When a cue-related event arrives, offer a few hard-coded next steps."""
-    if event.kind != "cue":
+    """When a cue fires or active cue changes, offer a few hard-coded next steps."""
+    if event.kind not in ("cue_fire", "active_cue"):
         return []
 
     cue = event.cue or "?"
     return [
         Option(
             key="1",
-            label=f"Go (main playback) — after cue {cue} event",
+            label=f"Go (main playback) — after cue {cue}",
             address=build_go_command(),
         ),
         Option(

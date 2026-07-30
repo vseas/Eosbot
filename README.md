@@ -28,15 +28,23 @@ pip install -r requirements.txt
 
 Edit `config.json`:
 
-- `connection.eos_ip` / `eos_port` — console (usually port **8000**)
-- `connection.listen_port` — local UDP port for EOS replies (default **8001**)
-- On the console: enable OSC, set UDP target to this machine’s IP and listen port
+- `connection.eos_ip` — console IP
+- `connection.transport` — **`tcp`** (preferred) or **`udp`**
+- **TCP (default):** Eos listens on **3032**; one bidirectional socket. Match `tcp_mode` to the desk (`1.0` packet-length is Eos default; `1.1` = SLIP).
+- **UDP fallback:** Eosbot transmits to `eos_port` (**8000**), receives on `listen_port` (**8001**) — the reverse of Eos RX 8000 / TX 8001.
+- On the console: enable **OSC RX** and **OSC TX** (Setup → System → Show Control → OSC)
 
 ## Run
 
 ```bash
-python3 -m eosbot.app --ip 172.16.6.11
-# or dry-run outbound only:
+# Tk desk panel (recommended):
+python3 -m eosbot.gui
+
+# Terminal STATE logger:
+python3 -m eosbot.app
+# force UDP fallback:
+python3 -m eosbot.app --transport udp
+# dry-run outbound only:
 python3 -m eosbot.app --dry-run
 ```
 
@@ -52,9 +60,12 @@ Eosbot/
   config.json
   requirements.txt
   eosbot/
-    app.py           # main loop
+    app.py           # main loop / shared core
+    gui.py           # Tk desk panel
+    state.py         # live desk snapshot
+    osc_tcp.py       # bidirectional TCP (port 3032)
     osc_send.py      # outbound UDP + command builders
-    osc_recv.py      # inbound listener
+    osc_recv.py      # inbound UDP listener
     events.py        # OSC → events
     policies/        # your growing option definitions
 ```
